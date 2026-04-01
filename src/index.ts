@@ -17,6 +17,28 @@ import { GroqTranscriptionService } from "./transcription/groqTranscriptionServi
 import { VoiceSessionManager } from "./voice/voiceSessionManager";
 import { VoiceAutoJoinCoordinator } from "./voice/voiceAutoJoinCoordinator";
 
+function formatUnknownError(error: unknown): Record<string, unknown> {
+  if (error instanceof Error) {
+    return {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+      cause:
+        error.cause instanceof Error
+          ? {
+              name: error.cause.name,
+              message: error.cause.message,
+              stack: error.cause.stack,
+            }
+          : error.cause,
+    };
+  }
+
+  return {
+    value: error,
+  };
+}
+
 async function main(): Promise<void> {
   const env = loadEnv();
   const logger = createLogger();
@@ -74,15 +96,15 @@ async function main(): Promise<void> {
   });
 
   client.on("error", (error) => {
-    logger.error({ err: error }, "Discord client error");
+    logger.error({ error: formatUnknownError(error) }, "Discord client error");
   });
 
   process.on("unhandledRejection", (reason) => {
-    logger.error({ err: reason }, "Unhandled promise rejection");
+    logger.error({ error: formatUnknownError(reason) }, "Unhandled promise rejection");
   });
 
   process.on("uncaughtException", (error) => {
-    logger.fatal({ err: error }, "Uncaught exception");
+    logger.fatal({ error: formatUnknownError(error) }, "Uncaught exception");
   });
 
   const shutdown = async (): Promise<void> => {
@@ -105,6 +127,6 @@ async function main(): Promise<void> {
 
 void main().catch((error) => {
   const logger = createLogger();
-  logger.fatal({ err: error }, "Failed to start NOVA");
+  logger.fatal({ error: formatUnknownError(error) }, "Failed to start NOVA");
   process.exitCode = 1;
 });
