@@ -6,7 +6,7 @@ export function GuildCard({ guild }: { guild: DashboardGuildViewModel }) {
     <article className="guild-card">
       <h3>{guild.name}</h3>
       <p className="muted">
-        Install NOVA into this server, then continue to guild-specific moderation settings.
+        Install NOVA into this server or open its configuration page.
       </p>
 
       <div className="guild-meta">

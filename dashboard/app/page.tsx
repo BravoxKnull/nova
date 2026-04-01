@@ -8,12 +8,11 @@ export default async function LandingPage() {
     <main className="shell page">
       <section className="hero">
         <div className="panel hero-main">
-          <span className="eyebrow">Discord OAuth + Server Install Flow</span>
-          <h1>Deploy NOVA once. Let servers install and manage it safely.</h1>
+          <span className="eyebrow">Discord login and server install</span>
+          <h1>NOVA Dashboard</h1>
           <p>
-            This dashboard handles Discord login, server discovery, and bot installation links
-            so server owners can connect NOVA to their guilds before configuring aliases,
-            speakers, and moderation rules.
+            Sign in with Discord, see the servers you can manage, and install NOVA into a guild
+            before configuring voice moderation rules.
           </p>
 
           <div className="hero-actions" style={{ marginTop: "1.5rem" }}>
@@ -39,20 +38,19 @@ export default async function LandingPage() {
 
         <aside className="panel hero-side">
           <div className="stat-card">
-            <div className="stat-label">What this app does first</div>
-            <div className="stat-value">Login + Guild Access</div>
+            <div className="stat-label">Flow</div>
+            <div className="stat-value">Login, choose guild, invite bot</div>
             <p className="muted">
-              Users authenticate with Discord, view manageable guilds, and install NOVA without
-              needing a public bot webpage on the bot service itself.
+              The dashboard is the public entry point. The bot service stays private on Railway.
             </p>
           </div>
 
           <div className="stat-card">
-            <div className="stat-label">What comes next</div>
-            <div className="stat-value">Guild Controls</div>
+            <div className="stat-label">Next</div>
+            <div className="stat-value">Guild settings and moderation controls</div>
             <p className="muted">
-              After installation, this dashboard can be extended to manage aliases, allowed
-              speakers, command toggles, and audit logs backed by Railway Postgres.
+              This layout is ready to expand into aliases, allowed speakers, command toggles,
+              and audit logs.
             </p>
           </div>
         </aside>

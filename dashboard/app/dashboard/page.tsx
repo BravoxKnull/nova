@@ -13,9 +13,9 @@ export default async function DashboardPage() {
       <section className="dashboard-head">
         <div>
           <p className="eyebrow">Authenticated as {session.user.global_name ?? session.user.username}</p>
-          <h1 className="page-title">Choose a server to install or configure NOVA.</h1>
+          <h1 className="page-title">Your Servers</h1>
           <p className="muted">
-            Only guilds where you are the owner or have Manage Server permissions are shown here.
+            Only servers where you are the owner or have Manage Server are shown here.
           </p>
         </div>
       </section>
