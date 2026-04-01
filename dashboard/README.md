@@ -5,7 +5,7 @@ The NOVA dashboard is a Next.js service that handles:
 - Discord OAuth login
 - guild discovery for the logged-in user
 - NOVA bot install/invite links scoped to a selected guild
-- the initial surface for future guild settings pages
+- database-backed guild settings pages with safe default configuration
 
 ## Local development
 
@@ -23,6 +23,7 @@ npm run dev
 - `DISCORD_BOT_PERMISSIONS`
 - `SESSION_SECRET`
 - `NEXT_PUBLIC_APP_URL`
+- `DATABASE_URL`
 
 ## Railway deployment
 
@@ -30,3 +31,14 @@ npm run dev
 - Set the service root directory to `dashboard`
 - Build command: `npm install && npm run build`
 - Start command: `npm start`
+- Attach the same Railway PostgreSQL database and expose its connection string as `DATABASE_URL`
+
+## Default guild configuration
+
+The first time a guild settings page is opened, the dashboard creates the default records NOVA needs:
+
+- a `guilds` row
+- a `guild_settings` row with `listen_mode=AUTO`
+- all built-in commands enabled
+- no aliases
+- no allowed speakers until the guild owner adds them

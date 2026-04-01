@@ -99,6 +99,7 @@ npm run dev
 - `DISCORD_BOT_PERMISSIONS`
 - `SESSION_SECRET`
 - `NEXT_PUBLIC_APP_URL`
+- `DATABASE_URL`
 
 ## Deployment
 
@@ -118,6 +119,7 @@ npm run dev
 - Runtime: Node.js 22+
 - Build command: `npm install && npm run build`
 - Start command: `npm start`
+- Attach the same Railway PostgreSQL service and set `DATABASE_URL`
 
 ## Database migration
 

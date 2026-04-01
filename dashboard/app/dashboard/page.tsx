@@ -40,7 +40,8 @@ export default async function DashboardPage() {
           <p className="eyebrow">Authenticated as {session.user.global_name ?? session.user.username}</p>
           <h1 className="page-title">Your Servers</h1>
           <p className="muted">
-            Only servers where you are the owner or have Manage Server are shown here.
+            Only servers where you are the owner or have Manage Server are shown here. Opening a
+            guild config page creates the default NOVA records for that server automatically.
           </p>
         </div>
       </section>

@@ -199,6 +199,10 @@ a.button:hover {
   gap: 1rem;
 }
 
+.guild-settings-grid {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
 .guild-grid {
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
 }
@@ -260,12 +264,97 @@ a.button:hover {
   color: var(--muted);
 }
 
+.feedback-banner {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--panel-border);
+  font-size: 0.95rem;
+}
+
+.success-banner {
+  background: rgba(35, 165, 89, 0.12);
+  border-color: rgba(35, 165, 89, 0.22);
+  color: #8fe3b0;
+}
+
+.error-banner {
+  background: rgba(242, 63, 67, 0.12);
+  border-color: rgba(242, 63, 67, 0.22);
+  color: #ff9ca0;
+}
+
+.form-section,
+.stack-form,
+.stack-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.inline-form {
+  display: inline-flex;
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.field span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: #111214;
+  color: var(--text);
+  padding: 0.82rem 0.9rem;
+  font: inherit;
+}
+
+.field input::placeholder {
+  color: #80848e;
+}
+
+.config-row,
+.log-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: #1a1b1e;
+}
+
+.empty-inline {
+  margin-top: 1rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  color: var(--muted);
+  background: #1a1b1e;
+}
+
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
   }
 
   .dashboard-head {
+    flex-direction: column;
+  }
+
+  .config-row,
+  .log-row {
+    align-items: flex-start;
     flex-direction: column;
   }
 }
