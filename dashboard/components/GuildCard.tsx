@@ -28,15 +28,9 @@ export function GuildCard({ guild }: { guild: DashboardGuildViewModel }) {
         >
           {guild.botInstalled ? "Reinstall NOVA" : "Invite NOVA"}
         </a>
-        {guild.botInstalled ? (
-          <Link className="button" href={`/dashboard/${guild.id}`}>
-            Open Config
-          </Link>
-        ) : (
-          <span aria-disabled="true" className="button secondary button-disabled">
-            Open Config
-          </span>
-        )}
+        <Link className="button" href={`/dashboard/${guild.id}`}>
+          Open Config
+        </Link>
       </div>
     </article>
   );

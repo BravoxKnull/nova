@@ -42,8 +42,8 @@ export default async function DashboardPage() {
           <p className="eyebrow">Authenticated as {session.user.global_name ?? session.user.username}</p>
           <h1 className="page-title">Your Servers</h1>
           <p className="muted">
-            Only servers where you are the owner or have Manage Server are shown here. A guild can
-            only be configured after NOVA has been invited into it.
+            Only servers where you are the owner or have Manage Server are shown here. If you just
+            invited NOVA, open the guild config once and the page will verify installation there.
           </p>
         </div>
       </section>
