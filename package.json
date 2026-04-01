@@ -6,7 +6,7 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "engines": {
-    "node": ">=20 <25"
+    "node": ">=22.12 <25"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
