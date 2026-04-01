@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { canManageGuild, fetchDiscordGuilds } from "../../../lib/discord";
+import {
+  buildDiscordInstallUrl,
+  canManageGuild,
+  fetchDiscordGuilds,
+  isBotInstalledInGuild,
+} from "../../../lib/discord";
 import { getOrCreateGuildDashboardConfig } from "../../../lib/guild-config";
 import { getDashboardSession } from "../../../lib/session";
 import {
@@ -71,6 +76,32 @@ export default async function GuildSettingsPage({
               </p>
             </div>
             <div className="row">
+              <Link className="button secondary" href="/dashboard">
+                Back to Guilds
+              </Link>
+            </div>
+          </section>
+        </main>
+      );
+    }
+
+    const botInstalled = await isBotInstalledInGuild(guildId);
+    if (!botInstalled) {
+      return (
+        <main className="shell page">
+          <section className="dashboard-head">
+            <div>
+              <p className="eyebrow">Invite required</p>
+              <h1 className="page-title">Invite NOVA before editing settings</h1>
+              <p className="muted">
+                This guild cannot be configured until NOVA has been added to the server. Finish the
+                install first, then come back here.
+              </p>
+            </div>
+            <div className="row">
+              <a className="button" href={buildDiscordInstallUrl(guildId)} target="_blank" rel="noreferrer">
+                Invite NOVA
+              </a>
               <Link className="button secondary" href="/dashboard">
                 Back to Guilds
               </Link>

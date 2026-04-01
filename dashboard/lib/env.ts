@@ -22,5 +22,7 @@ export function getDashboardEnv() {
     sessionSecret: readEnv("SESSION_SECRET"),
     appUrl: readEnv("NEXT_PUBLIC_APP_URL"),
     botPermissions: process.env.DISCORD_BOT_PERMISSIONS?.trim() || "4198400",
+    discordBotToken:
+      process.env.DISCORD_BOT_TOKEN?.trim() || process.env.DISCORD_TOKEN?.trim() || "",
   };
 }

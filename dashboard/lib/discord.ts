@@ -28,6 +28,15 @@ export interface DiscordGuild {
   permissions: string;
 }
 
+function readBotToken(): string | null {
+  const dashboardEnv = getDashboardEnv();
+  if (!dashboardEnv.discordBotToken) {
+    return null;
+  }
+
+  return dashboardEnv.discordBotToken;
+}
+
 function buildOAuthUrl(
   scopes: readonly string[],
   state: string,
@@ -155,6 +164,47 @@ export async function fetchDiscordGuilds(accessToken: string): Promise<DiscordGu
       Authorization: `Bearer ${accessToken}`,
     },
   });
+}
+
+export async function isBotInstalledInGuild(guildId: string): Promise<boolean> {
+  const botToken = readBotToken();
+  if (!botToken) {
+    return false;
+  }
+
+  const response = await fetch(`${DISCORD_API_BASE}/guilds/${guildId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bot ${botToken}`,
+    },
+    cache: "no-store",
+  });
+
+  if (response.ok) {
+    return true;
+  }
+
+  if (response.status === 403 || response.status === 404) {
+    return false;
+  }
+
+  const body = await response.text();
+  throw new Error(`Discord bot guild lookup failed: ${response.status} ${body}`);
+}
+
+export async function getInstalledBotGuildIds(guildIds: readonly string[]): Promise<Set<string>> {
+  if (!readBotToken()) {
+    return new Set();
+  }
+
+  const checks = await Promise.all(
+    guildIds.map(async (guildId) => ({
+      guildId,
+      installed: await isBotInstalledInGuild(guildId),
+    })),
+  );
+
+  return new Set(checks.filter((entry) => entry.installed).map((entry) => entry.guildId));
 }
 
 export function canManageGuild(guild: DiscordGuild): boolean {

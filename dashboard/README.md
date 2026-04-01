@@ -19,6 +19,7 @@ npm run dev
 
 - `DISCORD_CLIENT_ID`
 - `DISCORD_CLIENT_SECRET`
+- `DISCORD_BOT_TOKEN` recommended so the dashboard can verify whether NOVA is already installed in a guild
 - `DISCORD_REDIRECT_URI`
 - `DISCORD_BOT_PERMISSIONS`
 - `SESSION_SECRET`
