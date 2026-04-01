@@ -5,6 +5,7 @@ import {
   fetchDiscordGuilds,
   isBotInstalledInGuild,
 } from "../../../lib/discord";
+import { getRecentGuildAccess } from "../../../lib/guild-access";
 import { getOrCreateGuildDashboardConfig } from "../../../lib/guild-config";
 import { getDashboardSession } from "../../../lib/session";
 import {
@@ -60,29 +61,36 @@ export default async function GuildSettingsPage({
   }
 
   try {
-    const guilds = await fetchDiscordGuilds(session.accessToken);
-    const guild = guilds.find((entry) => entry.id === guildId);
-    const canManage = guild ? canManageGuild(guild) : false;
+    const recentGuildAccess = await getRecentGuildAccess(guildId);
+    let guildName = recentGuildAccess?.guildName ?? "";
 
-    if (!guild || !canManage) {
-      return (
-        <main className="shell page">
-          <section className="dashboard-head">
-            <div>
-              <p className="eyebrow">Access required</p>
-              <h1 className="page-title">Guild unavailable</h1>
-              <p className="muted">
-                NOVA could not verify that your Discord account can manage this guild.
-              </p>
-            </div>
-            <div className="row">
-              <Link className="button secondary" href="/dashboard">
-                Back to Guilds
-              </Link>
-            </div>
-          </section>
-        </main>
-      );
+    if (!recentGuildAccess) {
+      const guilds = await fetchDiscordGuilds(session.accessToken);
+      const guild = guilds.find((entry) => entry.id === guildId);
+      const canManage = guild ? canManageGuild(guild) : false;
+
+      if (!guild || !canManage) {
+        return (
+          <main className="shell page">
+            <section className="dashboard-head">
+              <div>
+                <p className="eyebrow">Access required</p>
+                <h1 className="page-title">Guild unavailable</h1>
+                <p className="muted">
+                  NOVA could not verify that your Discord account can manage this guild.
+                </p>
+              </div>
+              <div className="row">
+                <Link className="button secondary" href="/dashboard">
+                  Back to Guilds
+                </Link>
+              </div>
+            </section>
+          </main>
+        );
+      }
+
+      guildName = guild.name;
     }
 
     const botInstalled = await isBotInstalledInGuild(guildId);
@@ -118,7 +126,7 @@ export default async function GuildSettingsPage({
         <section className="dashboard-head">
           <div>
             <p className="eyebrow">Guild Configuration</p>
-            <h1 className="page-title">{guild.name}</h1>
+            <h1 className="page-title">{guildName}</h1>
             <p className="muted">
               Default records are created automatically the first time this page opens. From here,
               server owners can change command behavior, aliases, and the list of allowed speakers.

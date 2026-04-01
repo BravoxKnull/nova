@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { canManageGuild, fetchDiscordGuilds } from "../../../lib/discord";
+import { persistRecentGuildAccess } from "../../../lib/guild-access";
 import {
   createAlias,
   createAllowedSpeaker,
@@ -27,6 +28,8 @@ async function assertGuildAccess(guildId: string): Promise<void> {
   if (!guild || !canManageGuild(guild)) {
     redirect(`/dashboard/${guildId}?error=forbidden`);
   }
+
+  await persistRecentGuildAccess(guild.id, guild.name);
 }
 
 function redirectWithStatus(guildId: string, key: "success" | "error", value: string): never {
