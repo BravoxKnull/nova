@@ -1,6 +1,11 @@
 # NOVA
 
-NOVA is a production-grade Discord voice moderation bot built with Node.js, TypeScript, Discord voice receive, Groq Whisper transcription, and Prisma on PostgreSQL.
+NOVA now includes two deployable services:
+
+- the root Discord voice moderation bot
+- the `dashboard` Discord OAuth website for login, guild discovery, and bot install flow
+
+The bot is built with Node.js, TypeScript, Discord voice receive, Groq Whisper transcription, and Prisma on PostgreSQL. The dashboard is a Next.js app for Discord login and server onboarding.
 
 ## Features
 
@@ -11,6 +16,7 @@ NOVA is a production-grade Discord voice moderation bot built with Node.js, Type
 - Guild configuration loading from PostgreSQL with optional REST API primary source
 - Structured JSON logging with command audit persistence
 - Voice receive pipeline using `@discordjs/voice`, `prism-media`, and `opusscript`
+- Discord OAuth dashboard with guild listing and install/invite flow
 
 ## Runtime assumptions
 
@@ -21,6 +27,8 @@ NOVA is a production-grade Discord voice moderation bot built with Node.js, Type
 - `listen_mode=MANUAL` is preserved in configuration, but this scaffold does not yet expose a separate control surface for manual joins.
 
 ## Setup
+
+### Bot
 
 1. Install dependencies:
 
@@ -52,7 +60,30 @@ npm run prisma:validate
 npm run dev
 ```
 
+### Dashboard
+
+1. Install dashboard dependencies:
+
+```bash
+cd dashboard
+npm install
+```
+
+2. Copy the dashboard env file:
+
+```bash
+cp .env.example .env.local
+```
+
+3. Start the dashboard:
+
+```bash
+npm run dev
+```
+
 ## Environment variables
+
+### Bot
 
 - `DISCORD_TOKEN`
 - `DISCORD_CLIENT_ID`
@@ -60,11 +91,30 @@ npm run dev
 - `DATABASE_URL`
 - `CONFIG_API_URL` optional; if present, NOVA uses it as the primary config source and falls back to PostgreSQL
 
+### Dashboard
+
+- `DISCORD_CLIENT_ID`
+- `DISCORD_CLIENT_SECRET`
+- `DISCORD_REDIRECT_URI`
+- `DISCORD_BOT_PERMISSIONS`
+- `SESSION_SECRET`
+- `NEXT_PUBLIC_APP_URL`
+
 ## Deployment
 
-- Runtime: Node.js 20+
+### Railway Bot Service
+
+- Root directory: repository root
+- Runtime: Node.js 22+
 - Database: Railway PostgreSQL
 - Build command: `npm install && npm run prisma:generate && npm run build`
+- Start command: `npm start`
+
+### Railway Dashboard Service
+
+- Root directory: `dashboard`
+- Runtime: Node.js 22+
+- Build command: `npm install && npm run build`
 - Start command: `npm start`
 
 ## Discord requirements
@@ -72,3 +122,6 @@ npm run dev
 - Scopes: `bot`, `applications.commands`
 - Intents: `Guilds`, `GuildVoiceStates`, `GuildMembers`
 - Bot role must remain higher than any member NOVA moderates
+- In Discord Developer Portal, enable `Server Members Intent`
+- For the dashboard OAuth flow, set the redirect URL to your deployed dashboard callback route:
+  `https://your-dashboard-domain/api/auth/discord/callback`
