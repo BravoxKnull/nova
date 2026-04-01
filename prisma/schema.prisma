@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ListenMode {
+  AUTO
+  MANUAL
+}
+
+enum AllowedSpeakerType {
+  USER
+  ROLE
+}
+
+enum CommandName {
+  DRAG
+  MUTE
+  UNMUTE
+  DISCONNECT
+}
+
+model Guild {
+  id              String           @id @default(cuid())
+  guildId         String           @unique @map("guild_id")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  settings        GuildSettings?
+  allowedSpeakers AllowedSpeaker[]
+  commands        GuildCommand[]
+  aliases         GuildAlias[]
+  logs            CommandLog[]
+
+  @@map("guilds")
+}
+
+model GuildSettings {
+  id        String     @id @default(cuid())
+  guildId   String     @unique @map("guild_id")
+  listenMode ListenMode @default(AUTO) @map("listen_mode")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  guild     Guild      @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+
+  @@map("guild_settings")
+}
+
+model AllowedSpeaker {
+  id            String             @id @default(cuid())
+  guildId       String             @map("guild_id")
+  discordUserId String?            @map("discord_user_id")
+  discordRoleId String?            @map("discord_role_id")
+  type          AllowedSpeakerType
+  guild         Guild              @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+
+  @@index([guildId])
+  @@map("allowed_speakers")
+}
+
+model GuildCommand {
+  id          String      @id @default(cuid())
+  guildId     String      @map("guild_id")
+  commandName CommandName @map("command_name")
+  enabled     Boolean     @default(true)
+  guild       Guild       @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+
+  @@unique([guildId, commandName])
+  @@index([guildId, enabled])
+  @@map("commands")
+}
+
+model GuildAlias {
+  id          String      @id @default(cuid())
+  guildId     String      @map("guild_id")
+  alias       String
+  commandName CommandName @map("command_name")
+  guild       Guild       @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+
+  @@unique([guildId, alias])
+  @@index([guildId])
+  @@map("aliases")
+}
+
+model CommandLog {
+  id             String    @id @default(cuid())
+  guildId        String    @map("guild_id")
+  speakerId      String    @map("speaker_id")
+  rawText        String    @map("raw_text")
+  normalizedText String    @map("normalized_text")
+  parsedCommand  String?   @map("parsed_command")
+  targetUserId   String?   @map("target_user_id")
+  success        Boolean
+  errorMessage   String?   @map("error_message")
+  latencyMs      Int       @map("latency_ms")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  guild          Guild     @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+
+  @@index([guildId, createdAt])
+  @@index([speakerId, createdAt])
+  @@map("logs")
+}
