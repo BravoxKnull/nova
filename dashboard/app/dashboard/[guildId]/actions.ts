@@ -37,6 +37,10 @@ function revalidateGuildPath(guildId: string): void {
   revalidatePath(`/dashboard/${guildId}`);
 }
 
+function redirectToGuild(guildId: string): never {
+  redirect(`/dashboard/${guildId}`);
+}
+
 export async function setListenModeAction(formData: FormData): Promise<void> {
   const guildId = String(formData.get("guildId") ?? "");
   const listenMode = String(formData.get("listenMode") ?? "") as DashboardListenMode;
@@ -49,6 +53,7 @@ export async function setListenModeAction(formData: FormData): Promise<void> {
 
   await updateGuildListenMode(guildId, listenMode);
   revalidateGuildPath(guildId);
+  redirectToGuild(guildId);
 }
 
 export async function setCommandEnabledAction(formData: FormData): Promise<void> {
@@ -64,6 +69,7 @@ export async function setCommandEnabledAction(formData: FormData): Promise<void>
 
   await updateCommandEnabled(guildId, commandName, enabled);
   revalidateGuildPath(guildId);
+  redirectToGuild(guildId);
 }
 
 export async function addAliasAction(formData: FormData): Promise<void> {
@@ -76,6 +82,7 @@ export async function addAliasAction(formData: FormData): Promise<void> {
   try {
     await createAlias(guildId, alias, commandName);
     revalidateGuildPath(guildId);
+    redirectToGuild(guildId);
   } catch (error) {
     if ((error as { code?: string }).code === "23505") {
       redirectWithStatus(guildId, "error", "alias-exists");
@@ -92,6 +99,7 @@ export async function deleteAliasAction(formData: FormData): Promise<void> {
   await assertGuildAccess(guildId);
   await deleteAlias(guildId, aliasId);
   revalidateGuildPath(guildId);
+  redirectToGuild(guildId);
 }
 
 export async function addAllowedSpeakerAction(formData: FormData): Promise<void> {
@@ -108,6 +116,7 @@ export async function addAllowedSpeakerAction(formData: FormData): Promise<void>
   try {
     await createAllowedSpeaker(guildId, type, value);
     revalidateGuildPath(guildId);
+    redirectToGuild(guildId);
   } catch {
     redirectWithStatus(guildId, "error", "allowed-speaker-invalid");
   }
@@ -120,4 +129,5 @@ export async function deleteAllowedSpeakerAction(formData: FormData): Promise<vo
   await assertGuildAccess(guildId);
   await deleteAllowedSpeaker(guildId, allowedSpeakerId);
   revalidateGuildPath(guildId);
+  redirectToGuild(guildId);
 }
