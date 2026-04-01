@@ -42,7 +42,9 @@ function formatUnknownError(error: unknown): Record<string, unknown> {
 async function main(): Promise<void> {
   const env = loadEnv();
   const logger = createLogger();
+  logger.info("Startup checkpoint: environment loaded");
   const prisma = createPrismaClient(env.databaseUrl);
+  logger.info("Startup checkpoint: prisma client created");
   const databaseProvider = new DatabaseGuildConfigRepository(prisma);
   const primaryProvider = env.configApiUrl
     ? new ApiGuildConfigProvider(env.configApiUrl, logger)
@@ -61,7 +63,9 @@ async function main(): Promise<void> {
     executionQueue,
     logger,
   );
+  logger.info("Startup checkpoint: command pipeline created");
   const transcriptionService = new GroqTranscriptionService(env.groqApiKey, logger);
+  logger.info("Startup checkpoint: transcription service created");
 
   const client = new Client({
     intents: [
@@ -70,6 +74,7 @@ async function main(): Promise<void> {
       GatewayIntentBits.GuildVoiceStates,
     ],
   });
+  logger.info("Startup checkpoint: discord client created");
 
   const voiceSessionManager = new VoiceSessionManager(
     logger,
@@ -122,11 +127,14 @@ async function main(): Promise<void> {
     void shutdown();
   });
 
+  logger.info("Startup checkpoint: attempting Discord login");
   await client.login(env.discordToken);
 }
 
 void main().catch((error) => {
   const logger = createLogger();
-  logger.fatal({ error: formatUnknownError(error) }, "Failed to start NOVA");
+  const formattedError = formatUnknownError(error);
+  logger.fatal({ error: formattedError }, "Failed to start NOVA");
+  console.error("NOVA_STARTUP_ERROR", JSON.stringify(formattedError));
   process.exitCode = 1;
 });
