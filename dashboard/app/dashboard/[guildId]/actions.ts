@@ -33,6 +33,10 @@ function redirectWithStatus(guildId: string, key: "success" | "error", value: st
   redirect(`/dashboard/${guildId}?${key}=${encodeURIComponent(value)}`);
 }
 
+function revalidateGuildPath(guildId: string): void {
+  revalidatePath(`/dashboard/${guildId}`);
+}
+
 export async function setListenModeAction(formData: FormData): Promise<void> {
   const guildId = String(formData.get("guildId") ?? "");
   const listenMode = String(formData.get("listenMode") ?? "") as DashboardListenMode;
@@ -44,8 +48,7 @@ export async function setListenModeAction(formData: FormData): Promise<void> {
   }
 
   await updateGuildListenMode(guildId, listenMode);
-  revalidatePath(`/dashboard/${guildId}`);
-  redirectWithStatus(guildId, "success", "listen-mode-saved");
+  revalidateGuildPath(guildId);
 }
 
 export async function setCommandEnabledAction(formData: FormData): Promise<void> {
@@ -60,8 +63,7 @@ export async function setCommandEnabledAction(formData: FormData): Promise<void>
   }
 
   await updateCommandEnabled(guildId, commandName, enabled);
-  revalidatePath(`/dashboard/${guildId}`);
-  redirectWithStatus(guildId, "success", "command-updated");
+  revalidateGuildPath(guildId);
 }
 
 export async function addAliasAction(formData: FormData): Promise<void> {
@@ -73,8 +75,7 @@ export async function addAliasAction(formData: FormData): Promise<void> {
 
   try {
     await createAlias(guildId, alias, commandName);
-    revalidatePath(`/dashboard/${guildId}`);
-    redirectWithStatus(guildId, "success", "alias-added");
+    revalidateGuildPath(guildId);
   } catch (error) {
     if ((error as { code?: string }).code === "23505") {
       redirectWithStatus(guildId, "error", "alias-exists");
@@ -90,8 +91,7 @@ export async function deleteAliasAction(formData: FormData): Promise<void> {
 
   await assertGuildAccess(guildId);
   await deleteAlias(guildId, aliasId);
-  revalidatePath(`/dashboard/${guildId}`);
-  redirectWithStatus(guildId, "success", "alias-deleted");
+  revalidateGuildPath(guildId);
 }
 
 export async function addAllowedSpeakerAction(formData: FormData): Promise<void> {
@@ -107,8 +107,7 @@ export async function addAllowedSpeakerAction(formData: FormData): Promise<void>
 
   try {
     await createAllowedSpeaker(guildId, type, value);
-    revalidatePath(`/dashboard/${guildId}`);
-    redirectWithStatus(guildId, "success", "allowed-speaker-added");
+    revalidateGuildPath(guildId);
   } catch {
     redirectWithStatus(guildId, "error", "allowed-speaker-invalid");
   }
@@ -120,6 +119,5 @@ export async function deleteAllowedSpeakerAction(formData: FormData): Promise<vo
 
   await assertGuildAccess(guildId);
   await deleteAllowedSpeaker(guildId, allowedSpeakerId);
-  revalidatePath(`/dashboard/${guildId}`);
-  redirectWithStatus(guildId, "success", "allowed-speaker-deleted");
+  revalidateGuildPath(guildId);
 }
