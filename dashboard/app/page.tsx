@@ -21,9 +21,9 @@ export default async function LandingPage() {
                 Open Dashboard
               </Link>
             ) : (
-              <Link className="button" href="/api/auth/discord/login">
+              <a className="button" href="/api/auth/discord/login">
                 Continue With Discord
-              </Link>
+              </a>
             )}
             <a
               className="button secondary"

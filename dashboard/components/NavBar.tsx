@@ -18,14 +18,14 @@ export function NavBar(props: {
             <Link className="button secondary" href="/dashboard">
               Dashboard
             </Link>
-            <Link className="button secondary" href="/api/auth/discord/logout">
+            <a className="button secondary" href="/api/auth/discord/logout">
               Log Out
-            </Link>
+            </a>
           </>
         ) : (
-          <Link className="button secondary" href="/api/auth/discord/login">
+          <a className="button secondary" href="/api/auth/discord/login">
             Log In With Discord
-          </Link>
+          </a>
         )}
       </div>
     </header>
