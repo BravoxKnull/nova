@@ -109,6 +109,8 @@ npm run dev
 - Database: Railway PostgreSQL
 - Build command: `npm install && npm run prisma:generate && npm run build`
 - Start command: `npm start`
+- After the first PostgreSQL service is attached, apply the committed migration with:
+  `npx prisma migrate deploy`
 
 ### Railway Dashboard Service
 
@@ -116,6 +118,18 @@ npm run dev
 - Runtime: Node.js 22+
 - Build command: `npm install && npm run build`
 - Start command: `npm start`
+
+## Database migration
+
+The initial Prisma migration is committed under [prisma/migrations/20260401184000_init/migration.sql](D:\NOVA\prisma\migrations\20260401184000_init\migration.sql).
+
+Apply it against Railway Postgres with the bot service environment:
+
+```bash
+npx prisma migrate deploy
+```
+
+If you run this locally against Railway, use the Railway `DATABASE_URL` in your shell first. After migrations are applied, the bot and future dashboard config pages will share the same schema.
 
 ## Discord requirements
 
