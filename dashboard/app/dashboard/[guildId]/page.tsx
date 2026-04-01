@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { fetchDiscordGuilds } from "../../../lib/discord";
-import { requireDashboardSession } from "../../../lib/session";
+import { getDashboardSession } from "../../../lib/session";
 
 interface GuildSettingsPageProps {
   params: Promise<{
@@ -12,7 +12,31 @@ export default async function GuildSettingsPage({
   params,
 }: GuildSettingsPageProps) {
   const { guildId } = await params;
-  const session = await requireDashboardSession();
+  const session = await getDashboardSession();
+  if (!session) {
+    return (
+      <main className="shell page">
+        <section className="dashboard-head">
+          <div>
+            <p className="eyebrow">Session required</p>
+            <h1 className="page-title">Sign in to open guild settings.</h1>
+            <p className="muted">
+              This page needs your Discord session so NOVA can confirm which guild you are
+              managing.
+            </p>
+          </div>
+          <div className="row">
+            <a className="button" href="/api/auth/discord/login">
+              Log In With Discord
+            </a>
+            <Link className="button secondary" href="/">
+              Back Home
+            </Link>
+          </div>
+        </section>
+      </main>
+    );
+  }
   const guilds = await fetchDiscordGuilds(session.accessToken);
   const guild = guilds.find((entry) => entry.id === guildId);
 

@@ -1,12 +1,37 @@
 import { GuildCard } from "../../components/GuildCard";
 import { fetchDiscordGuilds } from "../../lib/discord";
 import { mapGuildsForDashboard } from "../../lib/guilds";
-import { requireDashboardSession } from "../../lib/session";
+import { getDashboardSession } from "../../lib/session";
+import Link from "next/link";
 
 export default async function DashboardPage() {
-  const session = await requireDashboardSession();
+  const session = await getDashboardSession();
+  if (!session) {
+    return (
+      <main className="shell page">
+        <section className="dashboard-head">
+          <div>
+            <p className="eyebrow">Session required</p>
+            <h1 className="page-title">Sign in to continue.</h1>
+            <p className="muted">
+              Your dashboard session is missing or expired. Sign in again to view and configure
+              your servers.
+            </p>
+          </div>
+          <div className="row">
+            <a className="button" href="/api/auth/discord/login">
+              Log In With Discord
+            </a>
+            <Link className="button secondary" href="/">
+              Back Home
+            </Link>
+          </div>
+        </section>
+      </main>
+    );
+  }
   const guilds = await fetchDiscordGuilds(session.accessToken);
-  const dashboardGuilds = mapGuildsForDashboard(guilds, (guildId) => `install:${guildId}`);
+  const dashboardGuilds = mapGuildsForDashboard(guilds);
 
   return (
     <main className="shell page">

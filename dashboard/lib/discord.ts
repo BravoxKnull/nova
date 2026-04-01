@@ -75,8 +75,15 @@ export function buildDiscordLoginUrl(state: string): string {
   return buildOAuthUrl(OAUTH_SCOPES, state);
 }
 
-export function buildDiscordInstallUrl(guildId: string, state: string): string {
-  return buildOAuthUrl(INSTALL_SCOPES, state, guildId);
+export function buildDiscordInstallUrl(guildId: string): string {
+  const dashboardEnv = getDashboardEnv();
+  const url = new URL(`${DISCORD_API_BASE}/oauth2/authorize`);
+  url.searchParams.set("client_id", dashboardEnv.discordClientId);
+  url.searchParams.set("scope", INSTALL_SCOPES.join(" "));
+  url.searchParams.set("permissions", dashboardEnv.botPermissions);
+  url.searchParams.set("guild_id", guildId);
+  url.searchParams.set("disable_guild_select", "true");
+  return url.toString();
 }
 
 export async function exchangeCodeForToken(code: string): Promise<DiscordTokenResponse> {

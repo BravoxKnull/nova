@@ -10,7 +10,6 @@ export interface DashboardGuildViewModel {
 
 export function mapGuildsForDashboard(
   guilds: readonly DiscordGuild[],
-  stateFactory: (guildId: string) => string,
 ): DashboardGuildViewModel[] {
   return guilds
     .filter((guild) => canManageGuild(guild))
@@ -22,6 +21,6 @@ export function mapGuildsForDashboard(
         ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`
         : null,
       canManage: true,
-      installUrl: buildDiscordInstallUrl(guild.id, stateFactory(guild.id)),
+      installUrl: buildDiscordInstallUrl(guild.id),
     }));
 }

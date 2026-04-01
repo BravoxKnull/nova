@@ -12,6 +12,6 @@ export async function GET(): Promise<NextResponse> {
   const guilds = await fetchDiscordGuilds(session.accessToken);
   return NextResponse.json({
     authenticated: true,
-    guilds: mapGuildsForDashboard(guilds, (guildId) => `install:${guildId}`),
+    guilds: mapGuildsForDashboard(guilds),
   });
 }
